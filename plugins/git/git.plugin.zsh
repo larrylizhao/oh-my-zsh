@@ -193,7 +193,6 @@ alias gloga='git log --oneline --decorate --graph --all'
 alias glp="_git_log_prettily"
 compdef _git glp=git-log
 
-alias gm='git merge'
 alias gmom='git merge origin/master'
 alias gmt='git mergetool --no-prompt'
 alias gmtvim='git mergetool --no-prompt --tool=vimdiff'
@@ -232,6 +231,7 @@ alias grup='git remote update'
 alias grv='git remote -v'
 
 alias gsb='git status -sb'
+alias gsc='git status -sb | grep UU'
 alias gsd='git svn dcommit'
 alias gsh='git show'
 alias gsi='git submodule init'
