@@ -176,6 +176,7 @@ alias glog='git log --oneline --decorate --graph'
 alias gloga='git log --oneline --decorate --graph --all'
 alias glp="_git_log_prettily"
 
+alias gme='git merge'
 alias gmom='git merge origin/master'
 alias gme='git merge'
 alias gmt='git mergetool --no-prompt'
