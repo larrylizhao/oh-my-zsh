@@ -39,7 +39,6 @@ function work_in_progress() {
 #
 
 alias g='git'
-alias gc='git clone'
 
 alias ga='git add'
 alias gaa='git add --all'
@@ -73,8 +72,8 @@ alias gcam='git commit -a -m'
 alias gcsm='git commit -s -m'
 alias gcb='git checkout -b'
 alias gcf='git config --list'
-alias gcl='git clone --recurse-submodules'
-alias gclean='git clean -id'
+alias gcl='git clone'
+alias gclean='git clean -fd'
 alias gpristine='git reset --hard && git clean -dfx'
 alias gcm='git checkout master'
 alias gcd='git checkout develop'
