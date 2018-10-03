@@ -39,6 +39,7 @@ function work_in_progress() {
 #
 
 alias g='git'
+alias gc='git clone'
 
 alias ga='git add'
 alias gaa='git add --all'
