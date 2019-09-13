@@ -64,8 +64,8 @@ alias gcam='git commit -a -m'
 alias gcsm='git commit -s -m'
 alias gcb='git checkout -b'
 alias gcf='git config --list'
-alias gcl='git clone --recurse-submodules'
-alias gclean='git clean -id'
+alias gcl='git clone'
+alias gclean='git clean -fd'
 alias gpristine='git reset --hard && git clean -dfx'
 alias gcm='git checkout master'
 alias gcd='git checkout develop'
@@ -160,14 +160,15 @@ alias gk='\gitk --all --branches'
 alias gke='\gitk --all $(git log -g --pretty=%h)'
 
 alias gl='git pull'
-alias glg='git log --stat'
+
+alias glgs='git log --stat'
 alias glgp='git log --stat -p'
 alias glgg='git log --graph'
 alias glgga='git log --graph --decorate --all'
 alias glgm='git log --graph --max-count=10'
-alias glo='git log --oneline --decorate'
+alias glo='git log'
 alias glol="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'"
-alias glols="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --stat"
+alias glg="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --stat"
 alias glod="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset'"
 alias glods="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset' --date=short"
 alias glola="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --all"
@@ -175,12 +176,13 @@ alias glog='git log --oneline --decorate --graph'
 alias gloga='git log --oneline --decorate --graph --all'
 alias glp="_git_log_prettily"
 
-alias gm='git merge'
+alias gme='git merge'
 alias gmom='git merge origin/master'
 alias gmt='git mergetool --no-prompt'
 alias gmtvim='git mergetool --no-prompt --tool=vimdiff'
 alias gmum='git merge upstream/master'
 alias gma='git merge --abort'
+alias gmb='git merge-base'
 
 alias gp='git push'
 alias gpd='git push --dry-run'
@@ -216,6 +218,7 @@ alias grup='git remote update'
 alias grv='git remote -v'
 
 alias gsb='git status -sb'
+alias gsc='git status -sb | grep UU'
 alias gsd='git svn dcommit'
 alias gsh='git show'
 alias gsi='git submodule init'
