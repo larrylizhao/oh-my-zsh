@@ -1,3 +1,7 @@
+# Git version checking
+autoload -Uz is-at-least
+git_version="${${(As: :)$(git version 2>/dev/null)}[3]}"
+
 #
 # Functions
 #
@@ -25,29 +29,16 @@ function work_in_progress() {
   fi
 }
 
-# Get the default 'main' branch: from origin, from local branches, or else just 'master'
+# Check if main exists and use instead of master
 function git_main_branch() {
-  # Get default branch from the origin remote
   local branch
-  branch="${$(command git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null)#refs/remotes/origin/}"
-
-  if [[ -n "$branch" ]]; then
-    echo "$branch"
-    return
-  fi
-
-  # Look up list of local branches and return the first one that exists
-  local -a branches
-  branches=(${(@f)"$(command git for-each-ref --format='%(refname:short)' refs/heads 2>/dev/null)"})
-  for branch in master main; do
-    if (( ${branches[(Ie)$branch]} )); then
-      echo "$branch"
+  for branch in main trunk; do
+    if command git show-ref -q --verify refs/heads/$branch; then
+      echo $branch
       return
     fi
   done
-
   echo master
-  return 1
 }
 
 #
@@ -120,7 +111,10 @@ function gdv() { git diff -w "$@" | view - }
 compdef _git gdv=git-diff
 
 alias gf='git fetch'
-alias gfa='git fetch --all --prune'
+# --jobs=<n> was added in git 2.8
+is-at-least 2.8 "$git_version" \
+  && alias gfa='git fetch --all --prune --jobs=10' \
+  || alias gfa='git fetch --all --prune'
 alias gfo='git fetch origin'
 
 alias gfg='git ls-files | grep'
@@ -258,8 +252,7 @@ alias gss='git status -s'
 alias gst='git status'
 
 # use the default stash push on git 2.13 and newer
-autoload -Uz is-at-least
-is-at-least 2.13 "$(git --version 2>/dev/null | awk '{print $3}')" \
+is-at-least 2.13 "$git_version" \
   && alias gsta='git stash push' \
   || alias gsta='git stash save'
 
@@ -309,3 +302,5 @@ function grename() {
     git push --set-upstream origin "$2"
   fi
 }
+
+unset git_version
