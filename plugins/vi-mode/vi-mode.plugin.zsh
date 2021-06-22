@@ -4,13 +4,21 @@
 # This is especially true if the prompt does things like checking git status.
 #
 # Set to "true" to force the prompt to reset on each mode change.
-# Set to "false" to force the prompt *not* to reset on each mode change.
+# Unset or set to any other value to do the opposite.
 #
-# (The default is not to reset, unless we're showing the mode in RPS1).
+# The default is not to reset, unless we're showing the mode in RPS1.
 typeset -g VI_MODE_RESET_PROMPT_ON_MODE_CHANGE
+# Control whether to change the cursor style on mode change.
+#
+# Set to "true" to change the cursor on each mode change.
+# Unset or set to any other value to do the opposite.
+typeset -g VI_MODE_SET_CURSOR
+
 typeset -g VI_KEYMAP=main
 
 function _vi-mode-set-cursor-shape-for-keymap() {
+  [[ "$VI_MODE_SET_CURSOR" = true ]] || return
+
   # https://vt100.net/docs/vt510-rm/DECSCUSR
   local _shape=0
   case "${1:-${VI_KEYMAP:-main}}" in
@@ -42,19 +50,28 @@ zle -N zle-keymap-select
 # These "echoti" statements were originally set in lib/key-bindings.zsh
 # Not sure the best way to extend without overriding.
 function zle-line-init() {
+  local prev_vi_keymap
+  prev_vi_keymap="${VI_KEYMAP:-}"
   typeset -g VI_KEYMAP=main
+  [[ "$prev_vi_keymap" != 'main' ]] && [[ "${VI_MODE_RESET_PROMPT_ON_MODE_CHANGE:-}" = true ]] && zle reset-prompt
   (( ! ${+terminfo[smkx]} )) || echoti smkx
   _vi-mode-set-cursor-shape-for-keymap "${VI_KEYMAP}"
 }
 zle -N zle-line-init
 
 function zle-line-finish() {
+  typeset -g VI_KEYMAP=main
   (( ! ${+terminfo[rmkx]} )) || echoti rmkx
   _vi-mode-set-cursor-shape-for-keymap default
 }
 zle -N zle-line-finish
 
 bindkey -v
+
+# allow vv to edit the command line (standard behaviour)
+autoload -Uz edit-command-line
+zle -N edit-command-line
+bindkey -M vicmd 'vv' edit-command-line
 
 # allow ctrl-p, ctrl-n for navigate history (standard behaviour)
 bindkey '^P' up-history
@@ -87,13 +104,13 @@ function wrap_clipboard_widgets() {
       eval "
         function ${wrapped_name}() {
           zle .${widget}
-          printf %s \"\${CUTBUFFER}\" | clipcopy
+          printf %s \"\${CUTBUFFER}\" | clipcopy 2>/dev/null || true
         }
       "
     else
       eval "
         function ${wrapped_name}() {
-          CUTBUFFER=\"\$(clippaste)\"
+          CUTBUFFER=\"\$(clippaste 2>/dev/null || echo \$CUTBUFFER)\"
           zle .${widget}
         }
       "
